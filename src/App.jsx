@@ -12,25 +12,48 @@ export default function App() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Initial session check
-    supabase.auth.getUser().then(({ data }) => {
-      if (data?.user && !data.user.is_anonymous) {
-        setUser(data.user)
-        setScreen("app")
-      } else {
+    // 🔒 INITIAL CHECK — KILL ANONYMOUS SESSION
+    const initAuth = async () => {
+      const { data } = await supabase.auth.getUser()
+
+      // ❌ If anonymous user → force logout
+      if (data?.user?.is_anonymous) {
+        await supabase.auth.signOut()
         setUser(null)
         setScreen("landing")
       }
-      setLoading(false)
-    })
+      // ✅ Real logged-in user
+      else if (data?.user) {
+        setUser(data.user)
+        setScreen("app")
+      }
+      // ❌ No user
+      else {
+        setUser(null)
+        setScreen("landing")
+      }
 
-    // Listen to auth changes
+      setLoading(false)
+    }
+
+    initAuth()
+
+    // 🔄 LISTEN FOR AUTH CHANGES
     const { data: listener } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        if (session?.user && !session.user.is_anonymous) {
+      async (_event, session) => {
+        // ❌ Anonymous detected → logout immediately
+        if (session?.user?.is_anonymous) {
+          await supabase.auth.signOut()
+          setUser(null)
+          setScreen("auth")
+        }
+        // ✅ Email/password user
+        else if (session?.user) {
           setUser(session.user)
           setScreen("app")
-        } else {
+        }
+        // ❌ Logged out
+        else {
           setUser(null)
           setScreen("auth")
         }
@@ -44,12 +67,12 @@ export default function App() {
     return <p style={{ padding: 40 }}>Loading...</p>
   }
 
-  // 1️⃣ Landing Page
+  // 1️⃣ LANDING PAGE (ANIMATION)
   if (screen === "landing") {
     return <Landing onStart={() => setScreen("auth")} />
   }
 
-  // 2️⃣ Login / Signup Page (CENTERED)
+  // 2️⃣ LOGIN / SIGNUP PAGE (CENTERED)
   if (screen === "auth") {
     return (
       <div
@@ -71,7 +94,7 @@ export default function App() {
     )
   }
 
-  // 3️⃣ Main App
+  // 3️⃣ MAIN APP (ONLY REAL USERS)
   return (
     <div style={{ padding: 40 }}>
       <h1>🏠 Room Finder</h1>
@@ -96,3 +119,4 @@ export default function App() {
     </div>
   )
 }
+
