@@ -9,7 +9,8 @@ export default function App() {
   const [user, setUser] = useState(null)
   const [showApp, setShowApp] = useState(false)
 
-  useEffect(() => {
+  useEffect(() => { console.log("USER:", user)
+
     supabase.auth.getUser().then(({ data }) => {
       setUser(data.user)
     })
@@ -29,9 +30,10 @@ export default function App() {
   }
 
   // 🔹 Show landing page first
-  if (!showApp) {
-    return <Landing onStart={() => setShowApp(true)} />
-  }
+  if (!showApp && !user) {
+  return <Landing onStart={() => setShowApp(true)} />
+}
+
 
   return (
     <div className="container">
