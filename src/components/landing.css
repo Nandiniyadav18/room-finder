@@ -1,0 +1,52 @@
+.landing {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  background: linear-gradient(135deg, #eef2ff, #ffffff);
+}
+
+.title {
+  font-size: 42px;
+  font-weight: 700;
+}
+
+.subtitle {
+  font-size: 18px;
+  color: #555;
+}
+
+/* Animation */
+.house {
+  font-size: 80px;
+  animation: float 2s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-18px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.start-btn {
+  margin-top: 22px;
+  padding: 12px 32px;
+  font-size: 16px;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.start-btn:hover {
+  background: #1d4ed8;
+}

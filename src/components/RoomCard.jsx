@@ -46,17 +46,12 @@ export default function RoomCard({ room, user }) {
       <p>📞 {room.contact}</p>
 
       {user && user.id === room.owner_id && (
-        <>
-          {edit ? (
-            <button onClick={updateRoom}>Save</button>
-          ) : (
-            <button onClick={() => setEdit(true)}>Edit</button>
-          )}
-          <button onClick={deleteRoom} style={{ background: "red" }}>
-            Delete
-          </button>
-        </>
-      )}
+  <>
+    <button onClick={() => setEdit(true)}>Edit</button>
+    <button onClick={deleteRoom}>Delete</button>
+  </>
+)}
+
     </div>
   )
 }
